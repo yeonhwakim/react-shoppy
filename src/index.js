@@ -10,6 +10,7 @@ import Error from "./components/Error";
 import Home from "./components/Home";
 import Products from "./components/Products";
 import Product from "./components/Product";
+import Cart from "./components/Cart";
 
 import reportWebVitals from "./reportWebVitals";
 
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "/products", element: <Products /> },
       { path: "/product/:id", element: <Product /> },
+      { path: "/cart", element: <Cart /> },
     ],
   },
 ]);
