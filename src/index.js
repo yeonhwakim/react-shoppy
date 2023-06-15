@@ -9,6 +9,7 @@ import App from "./App";
 import Error from "./components/Error";
 import Home from "./components/Home";
 import Products from "./components/Products";
+import Product from "./components/Product";
 
 import reportWebVitals from "./reportWebVitals";
 
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "/products", element: <Products /> },
+      { path: "/product/:id", element: <Product /> },
     ],
   },
 ]);
