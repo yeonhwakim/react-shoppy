@@ -11,6 +11,7 @@ import Home from "./components/Home";
 import Products from "./components/Products";
 import Product from "./components/Product";
 import Cart from "./components/Cart";
+import Admin from "./components/Admin";
 
 import reportWebVitals from "./reportWebVitals";
 
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: "/products", element: <Products /> },
       { path: "/product/:id", element: <Product /> },
       { path: "/cart", element: <Cart /> },
+      { path: "/admin", element: <Admin /> },
     ],
   },
 ]);
