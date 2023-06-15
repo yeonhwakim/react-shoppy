@@ -4,17 +4,23 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./index.css";
+
 import App from "./App";
 import Error from "./components/Error";
-import reportWebVitals from "./reportWebVitals";
 import Home from "./components/Home";
+import Products from "./components/Products";
+
+import reportWebVitals from "./reportWebVitals";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <Error />,
-    children: [{ index: true, element: <Home /> }],
+    children: [
+      { index: true, element: <Home /> },
+      { path: "/products", element: <Products /> },
+    ],
   },
 ]);
 
