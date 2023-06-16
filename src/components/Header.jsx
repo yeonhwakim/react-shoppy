@@ -9,7 +9,7 @@ function Header(props) {
       <button onClick={() => navigate("/")}>SHOPPY</button>
       <div>
         <button onClick={() => navigate("/products")}>products</button>
-        <button>
+        <button onClick={() => navigate("/cart")}>
           cart<span>1</span>
         </button>
         <button>admin</button>
