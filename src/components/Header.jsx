@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Header(props) {
+  const navigate = useNavigate();
+
   return (
     <nav>
-      <button>SHOPPY</button>
+      <button onClick={() => navigate("/")}>SHOPPY</button>
       <div>
         <button>products</button>
         <button>
