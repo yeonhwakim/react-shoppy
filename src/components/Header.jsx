@@ -8,7 +8,7 @@ function Header(props) {
     <nav>
       <button onClick={() => navigate("/")}>SHOPPY</button>
       <div>
-        <button>products</button>
+        <button onClick={() => navigate("/products")}>products</button>
         <button>
           cart<span>1</span>
         </button>
