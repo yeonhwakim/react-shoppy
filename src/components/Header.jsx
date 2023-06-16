@@ -12,7 +12,7 @@ function Header(props) {
         <button onClick={() => navigate("/cart")}>
           cart<span>1</span>
         </button>
-        <button>admin</button>
+        <button onClick={() => navigate("/admin")}>admin</button>
         <span>user</span>
         <button>Login</button>
         <button>Logout</button>
