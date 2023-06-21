@@ -7,6 +7,8 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   signOut,
+  setPersistence,
+  browserSessionPersistence,
 } from "firebase/auth";
 
 import { getDatabase, ref, get, child } from "firebase/database";
@@ -41,19 +43,25 @@ export function LoginContextProvider({ children }) {
   }, []);
 
   const handleClickLogin = async () => {
-    await signInWithPopup(authService, provider);
+    setPersistence(authService, browserSessionPersistence)
+      .then(async () => {
+        await signInWithPopup(authService, provider);
 
-    onAuthStateChanged(authService, (user) => {
-      if (user) {
-        const { displayName, photoURL, email } = user;
-        ~adminList.indexOf(email) && setIsAdmin(true);
-        setIsLogin(true);
-        setUserName(displayName);
-        setUserProfile(photoURL);
-      } else {
-        setIsLogin(false);
-      }
-    });
+        onAuthStateChanged(authService, (user) => {
+          if (user) {
+            const { displayName, photoURL, email } = user;
+            ~adminList.indexOf(email) && setIsAdmin(true);
+            setIsLogin(true);
+            setUserName(displayName);
+            setUserProfile(photoURL);
+          } else {
+            setIsLogin(false);
+          }
+        });
+      })
+      .catch(({ code, message }) => {
+        console.log(`${code}: ${message}`);
+      });
   };
 
   const handleClickLogout = async () => {
