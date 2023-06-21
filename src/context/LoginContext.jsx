@@ -28,6 +28,18 @@ export function LoginContextProvider({ children }) {
   const [userProfile, setUserProfile] = useState("");
 
   useEffect(() => {
+    authService.onAuthStateChanged((user) => {
+      if (user) {
+        const { displayName, photoURL, email } = user;
+        ~adminList.indexOf(email) && setIsAdmin(true);
+        setIsLogin(true);
+        setUserName(displayName);
+        setUserProfile(photoURL);
+      } else {
+        setIsLogin(false);
+      }
+    });
+
     const dbRef = ref(db);
     get(child(dbRef, "/admins"))
       .then((snapshot) => {
