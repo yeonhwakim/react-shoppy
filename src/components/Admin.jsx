@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
+
 import { createImageUrl } from "../api/cloudinary";
+import { addProduct } from "../api/firebase";
 
 const options = [
   { value: "1", option: "xs,s,m,l,xl" },
@@ -9,7 +13,10 @@ const options = [
   { value: "5", option: "상의,하의" },
   { value: "6", option: "r,t,y" },
 ];
+
 function Admin(props) {
+  const navigate = useNavigate();
+
   const [file, setFile] = useState({});
   const [product, setProduct] = useState({
     image: "",
@@ -59,24 +66,28 @@ function Admin(props) {
     const formData = new FormData();
 
     formData.append("file", file);
-    formData.append("upload_preset", "sbvpj9ux"); // unsigned preset => setting 에서 확인 가능
+    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); // unsigned preset => setting 에서 확인 가능
 
     const image = await createImageUrl({ formData });
 
     // 정보 저장 => firebase
+    const result = await addProduct({ product: { ...product, image } });
+
+    result ? navigate("/") : alert("오류 발생, 관리자에게 문의 바랍니다.");
   };
 
   return (
     <div>
       {image && <img src={image} alt="이미지" />}
       <form onSubmit={handleSubmit}>
-        <input type="file" name="image" onChange={handleChangeImage} />
+        <input type="file" name="image" onChange={handleChangeImage} required />
         <input
           type="text"
           name="name"
           value={name}
           placeholder="제품명"
           onChange={handleChangeProduct}
+          required
         />
         <input
           type="text"
@@ -84,6 +95,7 @@ function Admin(props) {
           value={price}
           placeholder="가격"
           onChange={handleChangeProduct}
+          required
         />
         <input
           type="text"
@@ -91,6 +103,7 @@ function Admin(props) {
           value={category}
           placeholder="카테고리"
           onChange={handleChangeProduct}
+          required
         />
         <input
           type="text"
@@ -98,9 +111,10 @@ function Admin(props) {
           value={description}
           placeholder="제품설명"
           onChange={handleChangeProduct}
+          required
         />
-        <select name="option" onChange={handleChangeProduct}>
-          <option value="" disabled defaultValue>
+        <select name="option" onChange={handleChangeProduct} required>
+          <option value="" defaultValue>
             옵션들(콤마(,)로 구분)
           </option>
           {options.map(({ value, option }) => (
