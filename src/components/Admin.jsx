@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const options = [
   { value: "1", option: "xs,s,m,l,xl" },
@@ -9,16 +9,83 @@ const options = [
   { value: "6", option: "r,t,y" },
 ];
 function Admin(props) {
+  const [file, setFile] = useState({});
+  const [product, setProduct] = useState({
+    image: "",
+    name: "",
+    price: "",
+    category: "",
+    description: "",
+    option: "",
+  });
+
+  const { image, name, price, category, description } = product;
+
+  const handleChangeProduct = (e) => {
+    const { name, value } = e.target;
+    setProduct((product) => ({
+      ...product,
+      [name]:
+        name === "option"
+          ? options.filter(({ value: id }) => id === value)[0].option
+          : value,
+    }));
+  };
+
+  const handleChangeImage = (e) => {
+    const { files, name } = e.target;
+    if (files && files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        setProduct((product) => ({
+          ...product,
+          [name]: e.target.result,
+        }));
+      };
+      reader.readAsDataURL(files[0]);
+      setFile(files[0]);
+    } else {
+      setProduct((product) => ({
+        ...product,
+        [name]: "",
+      }));
+    }
+  };
+
   return (
     <div>
-      <img />
+      {image && <img src={image} alt="이미지" />}
       <form>
-        <input type="file" name="image" />
-        <input type="text" name="name" placeholder="제품명" />
-        <input type="text" name="price" placeholder="가격" />
-        <input type="text" name="category" placeholder="카테고리" />
-        <input type="text" name="description" placeholder="제품설명" />
-        <select name="options">
+        <input type="file" name="image" onChange={handleChangeImage} />
+        <input
+          type="text"
+          name="name"
+          value={name}
+          placeholder="제품명"
+          onChange={handleChangeProduct}
+        />
+        <input
+          type="text"
+          name="price"
+          value={price}
+          placeholder="가격"
+          onChange={handleChangeProduct}
+        />
+        <input
+          type="text"
+          name="category"
+          value={category}
+          placeholder="카테고리"
+          onChange={handleChangeProduct}
+        />
+        <input
+          type="text"
+          name="description"
+          value={description}
+          placeholder="제품설명"
+          onChange={handleChangeProduct}
+        />
+        <select name="option" onChange={handleChangeProduct}>
           <option value="" disabled selected>
             옵션들(콤마(,)로 구분)
           </option>
