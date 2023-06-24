@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createImageUrl } from "../api/cloudinary";
 
 const options = [
   { value: "1", option: "xs,s,m,l,xl" },
@@ -52,10 +53,23 @@ function Admin(props) {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // 이미지 url 생성 => cloudinary
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("upload_preset", "sbvpj9ux"); // unsigned preset => setting 에서 확인 가능
+
+    const image = await createImageUrl({ formData });
+
+    // 정보 저장 => firebase
+  };
+
   return (
     <div>
       {image && <img src={image} alt="이미지" />}
-      <form>
+      <form onSubmit={handleSubmit}>
         <input type="file" name="image" onChange={handleChangeImage} />
         <input
           type="text"
@@ -86,7 +100,7 @@ function Admin(props) {
           onChange={handleChangeProduct}
         />
         <select name="option" onChange={handleChangeProduct}>
-          <option value="" disabled selected>
+          <option value="" disabled defaultValue>
             옵션들(콤마(,)로 구분)
           </option>
           {options.map(({ value, option }) => (
