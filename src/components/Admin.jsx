@@ -77,11 +77,18 @@ function Admin(props) {
   };
 
   return (
-    <div>
-      {image && <img src={image} alt="이미지" />}
+    <div className="p-4 flex flex flex-col items-center">
+      {image && <img className="mb-2 " src={image} alt="이미지" />}
       <form onSubmit={handleSubmit}>
-        <input type="file" name="image" onChange={handleChangeImage} required />
         <input
+          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
+          type="file"
+          name="image"
+          onChange={handleChangeImage}
+          required
+        />
+        <input
+          className="rounded-md border-2 p-2  mb-2 w-full border-zinc-700"
           type="text"
           name="name"
           value={name}
@@ -90,6 +97,7 @@ function Admin(props) {
           required
         />
         <input
+          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
           type="text"
           name="price"
           value={price}
@@ -98,6 +106,7 @@ function Admin(props) {
           required
         />
         <input
+          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
           type="text"
           name="category"
           value={category}
@@ -106,6 +115,7 @@ function Admin(props) {
           required
         />
         <input
+          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
           type="text"
           name="description"
           value={description}
@@ -113,7 +123,12 @@ function Admin(props) {
           onChange={handleChangeProduct}
           required
         />
-        <select name="option" onChange={handleChangeProduct} required>
+        <select
+          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700 no-arrow"
+          name="option"
+          onChange={handleChangeProduct}
+          required
+        >
           <option value="" defaultValue>
             옵션들(콤마(,)로 구분)
           </option>
@@ -123,7 +138,12 @@ function Admin(props) {
             </option>
           ))}
         </select>
-        <button type="submit">제품 등록하기</button>
+        <button
+          className="rounded-md border-2 p-2 mb-2 w-full border-black bg-black text-white"
+          type="submit"
+        >
+          제품 등록하기
+        </button>
       </form>
     </div>
   );
