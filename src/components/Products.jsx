@@ -1,58 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getProducts } from "../api/firebase";
 
-function Products(props) {
+function Products() {
+  const [products, setProduct] = useState([]);
+
+  useEffect(() => {
+    getProducts().then((products) => {
+      setProduct(products);
+    });
+  }, []);
+
   return (
     <ul>
-      <li>
-        <div>이미지</div>
-        <div>
-          <span>타이틀</span>
-          <span>가격</span>
-        </div>
-        <div>
-          <span>카테고리</span>
-        </div>
-      </li>
-      <li>
-        <div>이미지</div>
-        <div>
-          <span>타이틀</span>
-          <span>가격</span>
-        </div>
-        <div>
-          <span>카테고리</span>
-        </div>
-      </li>
-      <li>
-        <div>이미지</div>
-        <div>
-          <span>타이틀</span>
-          <span>가격</span>
-        </div>
-        <div>
-          <span>카테고리</span>
-        </div>
-      </li>
-      <li>
-        <div>이미지</div>
-        <div>
-          <span>타이틀</span>
-          <span>가격</span>
-        </div>
-        <div>
-          <span>카테고리</span>
-        </div>
-      </li>
-      <li>
-        <div>이미지</div>
-        <div>
-          <span>타이틀</span>
-          <span>가격</span>
-        </div>
-        <div>
-          <span>카테고리</span>
-        </div>
-      </li>
+      {products &&
+        products.map(({ id, image, name, price, category }) => (
+          <li key={id}>
+            <img src={image} alt={`${name} 이미지`} />
+            <div>
+              <span>{name}</span>
+              <span>{price}</span>
+            </div>
+            <div>
+              <span>{category}</span>
+            </div>
+          </li>
+        ))}
     </ul>
   );
 }
