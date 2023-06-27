@@ -39,3 +39,23 @@ export function getProducts() {
     return false;
   }
 }
+
+export function getProduct({ id }) {
+  try {
+    const dbRef = ref(getDatabase());
+    return get(child(dbRef, `products/${id}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          return snapshot.val();
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
