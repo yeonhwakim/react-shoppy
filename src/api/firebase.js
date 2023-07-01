@@ -1,15 +1,6 @@
 import app from "../config/firebase";
 
-import {
-  getDatabase,
-  ref,
-  set,
-  push,
-  get,
-  child,
-  update,
-  onValue,
-} from "firebase/database";
+import { getDatabase, ref, set, push, get, child } from "firebase/database";
 
 const db = getDatabase(app);
 
@@ -51,7 +42,7 @@ export function getProducts() {
 
 export function getProduct({ id }) {
   try {
-    const dbRef = ref(getDatabase());
+    const dbRef = ref(db);
     return get(child(dbRef, `products/${id}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -71,33 +62,10 @@ export function getProduct({ id }) {
 
 export function addCart({ userName, product }) {
   try {
-    ref
-      .child("users")
-      .orderByChild("ID")
-      .equalTo("U1EL5623")
-      .once("value", (snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          console.log("exists!", userData);
-        }
-      });
-    onValue(child(db, `carts/${userName}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          update(child(db, `carts/${userName}`), {});
-
-          const cartRef = ref(db, `carts/${userName}`);
-          const newCartRef = push(cartRef);
-          set(newCartRef, product);
-        } else {
-          set(ref(db, `carts/${userName}`, { product }));
-        }
-        return true;
-      })
-      .catch((error) => {
-        console.error(error);
-        return false;
-      });
+    const cartsListRef = ref(db, `carts/${userName}`);
+    const newCartsRef = push(cartsListRef);
+    set(newCartsRef, product);
+    return true;
   } catch (error) {
     console.error(error);
     return false;
