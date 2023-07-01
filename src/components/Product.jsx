@@ -15,11 +15,11 @@ function Product() {
   useEffect(() => {
     getProduct({ id }).then((product) => {
       setProduct(product);
-      setSelectOption(product?.options?.split(",")[0]);
+      setSelectOption(product?.option?.split(",")[0]);
     });
   }, []);
 
-  const handleClickCart = () => {
+  const handleClickCart = async () => {
     if (!isLogin) {
       const confirm = window.confirm("로그인 해주세요!");
 
@@ -34,13 +34,22 @@ function Product() {
     const confirm = window.confirm("장바구니에 담으시겠습니까?");
 
     if (confirm) {
-      addCart({
+      const result = await addCart({
         userName,
         product: Object.assign({ ...product }, { selectOption }),
       });
+
+      if (!result) {
+        window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+      }
     }
 
     return;
+  };
+
+  const handleChangeOption = (e) => {
+    const { value } = e.target;
+    setSelectOption(value);
   };
 
   return (
@@ -57,7 +66,7 @@ function Product() {
             <p>{description}</p>
             <div>
               <span>옵션 :</span>
-              <select name="" id="">
+              <select name="" id="" onChange={handleChangeOption}>
                 {option &&
                   option.split(",").map((item) => (
                     <option value={item} key={item}>
