@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { getProducts } from "../api/firebase";
 
 function Products() {
+  const navigate = useNavigate();
+
   const [products, setProduct] = useState([]);
 
   useEffect(() => {
@@ -10,6 +14,10 @@ function Products() {
     });
   }, []);
 
+  const handleClickProduct = (id) => {
+    navigate("/product/" + id);
+  };
+
   return (
     <ul className="p-4 grid grid-cols-4 gap-4">
       {products &&
@@ -17,6 +25,7 @@ function Products() {
           <li
             className="rounded-md flex flex-col items-center shadow-xl overflow-hidden"
             key={id}
+            onClick={() => handleClickProduct(id)}
           >
             <img className="w-50" src={image} alt={`${name} 이미지`} />
             <div className="w-full p-2">
