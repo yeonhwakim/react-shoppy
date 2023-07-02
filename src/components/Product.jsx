@@ -54,19 +54,24 @@ function Product() {
 
   return (
     product && (
-      <div>
-        <div>{`>${category}`}</div>
-        <div>
-          <img src={image} alt={`${name} 이미지`} />
-          <div>
-            <div>
-              <span>{name}</span>
-              <span>₩{price}</span>
+      <div className="flex flex-col items-center w-full py-2 px-8">
+        <div className="flex items-start w-full mb-4 text-base font-semibold text-gray-400">{`> ${category}`}</div>
+        <div className="flex flex-row w-full justify-between">
+          <img className="mr-4" src={image} alt={`${name} 이미지`} />
+          <div className="flex flex-col w-full p-2">
+            <div className="flex flex-col w-full border-b-2 border-gray-400">
+              <span className="text-xl font-bold text-black mb-2">{name}</span>
+              <span className="text-xl font-bold text-black mb-2">
+                ₩{price}
+              </span>
             </div>
-            <p>{description}</p>
-            <div>
-              <span>옵션 :</span>
-              <select name="" id="" onChange={handleChangeOption}>
+            <p className="py-2 text-base text-gray-600">{description}</p>
+            <div className="flex flex-row justify-between">
+              <span className="text-base">옵션 </span>
+              <select
+                className="outline-0 w-11/12 border-2 border-dashed border-black"
+                onChange={handleChangeOption}
+              >
                 {option &&
                   option.split(",").map((item) => (
                     <option value={item} key={item}>
@@ -75,7 +80,12 @@ function Product() {
                   ))}
               </select>
             </div>
-            <button onClick={handleClickCart}>장바구니에 추가</button>
+            <button
+              className="rounded-md border-2 p-2 mb-2 w-full border-black bg-black text-white mt-4"
+              onClick={handleClickCart}
+            >
+              장바구니에 추가
+            </button>
           </div>
         </div>
       </div>
