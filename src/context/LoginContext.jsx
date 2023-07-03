@@ -12,6 +12,7 @@ import {
 } from "firebase/auth";
 
 import { getDatabase, ref, get, child } from "firebase/database";
+import { addUser } from "../api/firebase";
 
 const authService = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -26,20 +27,9 @@ export function LoginContextProvider({ children }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [userName, setUserName] = useState("");
   const [userProfile, setUserProfile] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-    authService.onAuthStateChanged((user) => {
-      if (user) {
-        const { displayName, photoURL, email } = user;
-        ~adminList.indexOf(email) && setIsAdmin(true);
-        setIsLogin(true);
-        setUserName(displayName);
-        setUserProfile(photoURL);
-      } else {
-        setIsLogin(false);
-      }
-    });
-
     const dbRef = ref(db);
     get(child(dbRef, "/admins"))
       .then((snapshot) => {
@@ -52,6 +42,20 @@ export function LoginContextProvider({ children }) {
       .catch((error) => {
         console.error(error);
       });
+
+    authService.onAuthStateChanged(async (user) => {
+      if (user) {
+        const { displayName, photoURL, email } = user;
+        await addUser({ displayName, photoURL, email });
+        ~adminList.indexOf(email) && setIsAdmin(true);
+        setIsLogin(true);
+        setUserName(displayName);
+        setUserProfile(photoURL);
+        setUserEmail(email);
+      } else {
+        setIsLogin(false);
+      }
+    });
   }, []);
 
   const handleClickLogin = async () => {
@@ -88,6 +92,7 @@ export function LoginContextProvider({ children }) {
         isAdmin,
         userName,
         userProfile,
+        userEmail,
         handleClickLogin,
         handleClickLogout,
       }}
