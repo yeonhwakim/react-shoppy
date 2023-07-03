@@ -6,7 +6,7 @@ import { getProduct, addCart } from "../api/firebase";
 
 function Product() {
   const { id } = useParams();
-  const { isLogin, userName, handleClickLogin } = useFirebase();
+  const { isLogin, userEmail, handleClickLogin } = useFirebase();
 
   const [product, setProduct] = useState({});
   const [selectOption, setSelectOption] = useState({});
@@ -35,7 +35,7 @@ function Product() {
 
     if (confirm) {
       const result = await addCart({
-        userName,
+        userEmail,
         product: Object.assign({ ...product }, { selectOption }),
       });
 

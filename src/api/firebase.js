@@ -70,9 +70,9 @@ export function getProduct({ id }) {
   }
 }
 
-export function addCart({ userName, product }) {
+export function addCart({ userEmail, product }) {
   try {
-    const cartsListRef = ref(db, `carts/${userName}`);
+    const cartsListRef = ref(db, `carts/${userEmail.split("@")[0]}`);
     const newCartsRef = push(cartsListRef);
     set(newCartsRef, product);
     return true;
