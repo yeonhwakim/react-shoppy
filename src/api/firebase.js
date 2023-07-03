@@ -4,6 +4,16 @@ import { getDatabase, ref, set, push, get, child } from "firebase/database";
 
 const db = getDatabase(app);
 
+export function addUser(user) {
+  try {
+    set(ref(db, `users/${user.email.split("@")[0]}`), user);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
 export function addProduct({ product }) {
   try {
     const productsListRef = ref(db, "products");
@@ -60,9 +70,9 @@ export function getProduct({ id }) {
   }
 }
 
-export function addCart({ userName, product }) {
+export function addCart({ userEmail, product }) {
   try {
-    const cartsListRef = ref(db, `carts/${userName}`);
+    const cartsListRef = ref(db, `carts/${userEmail.split("@")[0]}`);
     const newCartsRef = push(cartsListRef);
     set(newCartsRef, product);
     return true;
