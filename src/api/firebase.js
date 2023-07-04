@@ -70,6 +70,27 @@ export function getProduct({ id }) {
   }
 }
 
+export function isProductInCart({ userEmail, productId, selectOption }) {
+  try {
+    const dbRef = ref(db);
+    return get(
+      child(
+        dbRef,
+        `carts/${userEmail.split("@")[0]}/${productId}/${selectOption}`
+      )
+    )
+      .then((snapshot) => {
+        return snapshot.exists() ? snapshot.val() : false;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
 export function addCart({ userEmail, product, productId }) {
   try {
     set(
