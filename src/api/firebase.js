@@ -70,11 +70,15 @@ export function getProduct({ id }) {
   }
 }
 
-export function addCart({ userEmail, product }) {
+export function addCart({ userEmail, product, productId }) {
   try {
-    const cartsListRef = ref(db, `carts/${userEmail.split("@")[0]}`);
-    const newCartsRef = push(cartsListRef);
-    set(newCartsRef, product);
+    set(
+      ref(
+        db,
+        `carts/${userEmail.split("@")[0]}/${productId}/${product.selectOption}`
+      ),
+      product
+    );
     return true;
   } catch (error) {
     console.error(error);
