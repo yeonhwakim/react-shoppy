@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useFirebase } from "../context/LoginContext";
-import { getProduct, addCart } from "../api/firebase";
+import { getProduct, addCart, isProductInCart } from "../api/firebase";
 
 function Product() {
   const { id } = useParams();
@@ -17,7 +17,7 @@ function Product() {
       setProduct(product);
       setSelectOption(product?.option?.split(",")[0]);
     });
-  }, []);
+  }, [id]);
 
   const handleClickCart = async () => {
     if (!isLogin) {
@@ -34,9 +34,41 @@ function Product() {
     const confirm = window.confirm("장바구니에 담으시겠습니까?");
 
     if (confirm) {
+      const isProduct = await isProductInCart({
+        userEmail,
+        productId: id,
+        selectOption,
+      });
+
+      if (isProduct && isProduct.selectOption === selectOption) {
+        const confirm = window.confirm(
+          "장바구니에 있습니다. 추가하시겠습니까?"
+        );
+
+        if (!confirm) {
+          return;
+        }
+
+        const result = await addCart({
+          userEmail,
+          product: Object.assign(
+            { ...product },
+            { selectOption, count: isProduct.count + 1 }
+          ),
+          productId: id,
+        });
+
+        if (!result) {
+          window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+        }
+
+        return;
+      }
+
       const result = await addCart({
         userEmail,
-        product: Object.assign({ ...product }, { selectOption }),
+        product: Object.assign({ ...product }, { selectOption, count: 1 }),
+        productId: id,
       });
 
       if (!result) {
