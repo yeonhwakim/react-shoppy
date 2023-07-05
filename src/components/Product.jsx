@@ -6,7 +6,7 @@ import { getProduct, addCart, isProductInCart } from "../api/firebase";
 
 function Product() {
   const { id } = useParams();
-  const { isLogin, userEmail, handleClickLogin } = useFirebase();
+  const { isLogin, userEmail, handleClickLogin, handleAddCart } = useFirebase();
 
   const [product, setProduct] = useState({});
   const [selectOption, setSelectOption] = useState({});
@@ -58,11 +58,13 @@ function Product() {
           productId: id,
         });
 
-        if (!result) {
-          window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+        if (result) {
+          return await handleAddCart();
         }
 
-        return;
+        return window.alert(
+          "오류가 발생했습니다. 관리자에게 문의 부탁드립니다."
+        );
       }
 
       const result = await addCart({
@@ -71,9 +73,11 @@ function Product() {
         productId: id,
       });
 
-      if (!result) {
-        window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+      if (result) {
+        return await handleAddCart();
       }
+
+      return window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
     }
 
     return;
