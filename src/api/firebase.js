@@ -106,3 +106,20 @@ export function addCart({ userEmail, product, productId }) {
     return false;
   }
 }
+
+export function getProductInCartCount({ userEmail }) {
+  try {
+    return get(child(ref(db), `carts/${userEmail.split("@")[0]}`))
+      .then((snapshot) => {
+        return snapshot.exists()
+          ? Object.keys(Object.values(snapshot.val())[0]).length
+          : 0;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
