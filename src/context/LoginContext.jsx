@@ -12,7 +12,7 @@ import {
 } from "firebase/auth";
 
 import { getDatabase, ref, get, child } from "firebase/database";
-import { addUser } from "../api/firebase";
+import { addUser, getProductInCartCount } from "../api/firebase";
 
 const authService = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -28,6 +28,7 @@ export function LoginContextProvider({ children }) {
   const [userName, setUserName] = useState("");
   const [userProfile, setUserProfile] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [cart, setCart] = useState(0);
 
   useEffect(() => {
     const dbRef = ref(db);
@@ -58,6 +59,12 @@ export function LoginContextProvider({ children }) {
     });
   }, []);
 
+  useEffect(() => {
+    getProductInCartCount({ userEmail }).then((count) => {
+      setCart(count);
+    });
+  }, []);
+
   const handleClickLogin = async () => {
     setPersistence(authService, browserSessionPersistence)
       .then(async () => {
@@ -85,6 +92,10 @@ export function LoginContextProvider({ children }) {
     setIsLogin(false);
   };
 
+  const handleAddCart = async () => {
+    setCart((prevCount) => prevCount + 1);
+  };
+
   return (
     <LoginContext.Provider
       value={{
@@ -93,8 +104,10 @@ export function LoginContextProvider({ children }) {
         userName,
         userProfile,
         userEmail,
+        cart,
         handleClickLogin,
         handleClickLogout,
+        handleAddCart,
       }}
     >
       {children}
