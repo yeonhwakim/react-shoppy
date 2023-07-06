@@ -72,7 +72,7 @@ function Cart() {
     setTotalPrice((prev) => prev - +price);
   };
 
-  const trashProduct = async (idx) => {
+  const removeProduct = async (idx) => {
     await setProducts((prev) => prev.filter((_, index) => index !== idx));
 
     const product = products[idx];
@@ -109,7 +109,7 @@ function Cart() {
                       <span>{count}</span>
                       <button onClick={() => incrementProduct(index)}>+</button>
                     </div>
-                    <button onClick={() => trashProduct(index)}>휴지통</button>
+                    <button onClick={() => removeProduct(index)}>휴지통</button>
                   </div>
                 </li>
               )
