@@ -13,8 +13,9 @@ function Cart() {
     getProductInCart({ userEmail }).then((cart) => {
       cart.forEach((cartProducts) => {
         Object.values(cartProducts).forEach((product) => {
+          const { price, count } = product;
           setProducts((prev) => [...prev, product]);
-          setTotalPrice((prev) => prev + +product.price);
+          setTotalPrice((prev) => prev + +price * +count);
         });
       });
     });
@@ -37,7 +38,7 @@ function Cart() {
       },
     });
 
-    await setTotalPrice((prev) => prev + +product.price);
+    setTotalPrice((prev) => prev + +product.price);
   };
 
   return (
