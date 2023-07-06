@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useFirebase } from "../context/LoginContext";
 
-import { getProductInCart } from "../api/firebase";
+import { getProductInCart, removeCart, addCart } from "../api/firebase";
 
 function Cart() {
   const { userEmail } = useFirebase();
@@ -19,6 +19,26 @@ function Cart() {
       });
     });
   }, []);
+
+  const incrementProduct = async (idx) => {
+    await setProducts((prev) =>
+      prev.map((item, index) =>
+        idx === index ? { ...item, count: item.count + 1 } : item
+      )
+    );
+
+    const product = products[idx];
+
+    await addCart({
+      userEmail,
+      product: {
+        ...product,
+        count: product.count + 1,
+      },
+    });
+
+    await setTotalPrice((prev) => prev + +product.price);
+  };
 
   return (
     <div>
@@ -39,9 +59,9 @@ function Cart() {
                   </div>
                   <div>
                     <div>
-                      <button>+</button>
-                      <span>{count}</span>
                       <button>-</button>
+                      <span>{count}</span>
+                      <button onClick={() => incrementProduct(index)}>+</button>
                     </div>
                     <button></button>
                   </div>

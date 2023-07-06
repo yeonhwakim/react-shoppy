@@ -1,6 +1,14 @@
 import app from "../config/firebase";
 
-import { getDatabase, ref, set, push, get, child } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  set,
+  push,
+  get,
+  child,
+  remove,
+} from "firebase/database";
 
 const db = getDatabase(app);
 
@@ -91,14 +99,25 @@ export function isProductInCart({ userEmail, productId, selectOption }) {
   }
 }
 
-export function addCart({ userEmail, product, productId }) {
+export function addCart({ userEmail, product }) {
   try {
+    const { productId, selectOption } = product;
     set(
-      ref(
-        db,
-        `carts/${userEmail.split("@")[0]}/${productId}/${product.selectOption}`
-      ),
-      Object.assign(product, { productId })
+      ref(db, `carts/${userEmail.split("@")[0]}/${productId}/${selectOption}`),
+      product
+    );
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export function removeCart({ userEmail, product }) {
+  try {
+    const { productId, selectOption } = product;
+    remove(
+      ref(db, `carts/${userEmail.split("@")[0]}/${productId}/${selectOption}`)
     );
     return true;
   } catch (error) {

@@ -53,9 +53,8 @@ function Product() {
           userEmail,
           product: Object.assign(
             { ...product },
-            { selectOption, count: isProduct.count + 1 }
+            { selectOption, count: isProduct.count + 1, productId: id }
           ),
-          productId: id,
         });
 
         if (result) {
@@ -69,8 +68,10 @@ function Product() {
 
       const result = await addCart({
         userEmail,
-        product: Object.assign({ ...product }, { selectOption, count: 1 }),
-        productId: id,
+        product: Object.assign(
+          { ...product },
+          { selectOption, count: 1, productId: id }
+        ),
       });
 
       if (result) {
