@@ -41,6 +41,37 @@ function Cart() {
     setTotalPrice((prev) => prev + +product.price);
   };
 
+  const decrementProduct = async (idx) => {
+    await setProducts((prev) =>
+      prev.map((item, index) =>
+        idx === index ? { ...item, count: item.count - 1 } : item
+      )
+    );
+
+    const product = products[idx];
+    const { count, price } = product;
+
+    if (count - 1 < 1) {
+      await removeCart({
+        userEmail,
+        product,
+      });
+      setTotalPrice((prev) => prev - +price);
+
+      return;
+    }
+
+    await addCart({
+      userEmail,
+      product: {
+        ...product,
+        count: count - 1,
+      },
+    });
+
+    setTotalPrice((prev) => prev - +price);
+  };
+
   return (
     <div>
       <div>내 장바구니</div>
@@ -60,11 +91,11 @@ function Cart() {
                   </div>
                   <div>
                     <div>
-                      <button>-</button>
+                      <button onClick={() => decrementProduct(index)}>-</button>
                       <span>{count}</span>
                       <button onClick={() => incrementProduct(index)}>+</button>
                     </div>
-                    <button></button>
+                    <button>휴지통</button>
                   </div>
                 </li>
               )
