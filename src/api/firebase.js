@@ -98,7 +98,7 @@ export function addCart({ userEmail, product, productId }) {
         db,
         `carts/${userEmail.split("@")[0]}/${productId}/${product.selectOption}`
       ),
-      product
+      Object.assign(product, { productId })
     );
     return true;
   } catch (error) {
@@ -114,6 +114,23 @@ export function getProductInCartCount({ userEmail }) {
         return snapshot.exists()
           ? Object.keys(Object.values(snapshot.val())[0]).length
           : 0;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export function getProductInCart({ userEmail }) {
+  try {
+    return get(child(ref(db), `/carts/${userEmail.split("@")[0]}`))
+      .then((snapshot) => {
+        return snapshot.exists()
+          ? Object.values(Object.values(snapshot.val())[0])
+          : [];
       })
       .catch((error) => {
         console.error(error);

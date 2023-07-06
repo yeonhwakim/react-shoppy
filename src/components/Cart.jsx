@@ -1,47 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-function Cart(props) {
+import { useFirebase } from "../context/LoginContext";
+
+import { getProductInCart } from "../api/firebase";
+
+function Cart() {
+  const { userEmail } = useFirebase();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    getProductInCart({ userEmail }).then((cart) => {
+      cart.forEach((cartProducts) => {
+        Object.values(cartProducts).forEach((product) => {
+          setProducts((prev) => [...prev, product]);
+        });
+      });
+    });
+  }, []);
+
   return (
     <div>
       <div>내 장바구니</div>
       <div>
         <ul>
-          <li>
-            <div>
-              <img src="" alt="" />
-              <div>
-                <p>제품명</p>
-                <p>사이즈</p>
-                <p>가격</p>
-              </div>
-            </div>
-            <div>
-              <div>
-                <button>+</button>
-                <span>2</span>
-                <button>-</button>
-              </div>
-              <button></button>
-            </div>
-          </li>
-          <li>
-            <div>
-              <img src="" alt="" />
-              <div>
-                <p>제품명</p>
-                <p>사이즈</p>
-                <p>가격</p>
-              </div>
-            </div>
-            <div>
-              <div>
-                <button>+</button>
-                <span>2</span>
-                <button>-</button>
-              </div>
-              <button></button>
-            </div>
-          </li>
+          {products &&
+            products.map(({ image, name, selectOption, price, count }) => (
+              <li>
+                <div>
+                  <img src={image} alt="" />
+                  <div>
+                    <p>{name}</p>
+                    <p>{selectOption}</p>
+                    <p>{price}</p>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <button>+</button>
+                    <span>{count}</span>
+                    <button>-</button>
+                  </div>
+                  <button></button>
+                </div>
+              </li>
+            ))}
         </ul>
       </div>
       <div>
