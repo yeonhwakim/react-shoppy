@@ -15,6 +15,7 @@ function Header() {
     isLogin,
     userName,
     userProfile,
+    cart,
     isAdmin,
     handleClickLogin,
     handleClickLogout,
@@ -41,7 +42,7 @@ function Header() {
         >
           <AiOutlineShoppingCart className="block w-7 h-7 absolute inset-0 font-bold" />
           <div className="absolute absolute flex items-center justify-center rounded-full bg-black text-white -top-1.5 -right-1.5  w-4 h-4 text-xs font-semibold">
-            1
+            {cart}
           </div>
         </button>
         {isAdmin && (
