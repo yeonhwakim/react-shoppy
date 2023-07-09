@@ -12,6 +12,26 @@ import {
 
 const db = getDatabase(app);
 
+export function getAdmin() {
+  try {
+    const dbRef = ref(db);
+    return get(child(dbRef, "/admins"))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          return snapshot.val();
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
 export function addUser(user) {
   try {
     set(ref(db, `users/${user.email.split("@")[0]}`), user);
