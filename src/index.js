@@ -11,7 +11,7 @@ import Home from "./components/Home";
 import Products from "./components/Products";
 import Product from "./components/Product";
 import Cart from "./components/Cart";
-import Admin from "./components/Admin";
+import NewProduct from "./components/NewProduct";
 
 import reportWebVitals from "./reportWebVitals";
 
@@ -21,11 +21,16 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <Error />,
     children: [
-      { index: true, element: <Home /> },
+      { path: "/", index: true, element: <Home /> },
       { path: "/products", element: <Products /> },
-      { path: "/product/:id", element: <Product /> },
+      {
+        path: "/product",
+        children: [
+          { path: ":id", element: <Product /> },
+          { path: "new", element: <NewProduct /> },
+        ],
+      },
       { path: "/cart", element: <Cart /> },
-      { path: "/admin", element: <Admin /> },
     ],
   },
 ]);

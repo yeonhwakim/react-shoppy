@@ -46,7 +46,10 @@ function Header() {
           </div>
         </button>
         {isAdmin && (
-          <button className="w-7 h-7 mr-2" onClick={() => navigate("/admin")}>
+          <button
+            className="w-7 h-7 mr-2"
+            onClick={() => navigate("/product/new")}
+          >
             <AiOutlineEdit className="block w-7 h-7 font-bold" />
           </button>
         )}
