@@ -11,13 +11,10 @@ import {
   browserSessionPersistence,
 } from "firebase/auth";
 
-import { getDatabase, ref, get, child } from "firebase/database";
-import { addUser, getProductInCartCount } from "../api/firebase";
+import { getAdmin, addUser, getProductInCartCount } from "../api/firebase";
 
 const authService = getAuth(app);
 const provider = new GoogleAuthProvider();
-
-const db = getDatabase(app);
 
 export const LoginContext = createContext();
 
@@ -31,18 +28,9 @@ export function LoginContextProvider({ children }) {
   const [cart, setCart] = useState(0);
 
   useEffect(() => {
-    const dbRef = ref(db);
-    get(child(dbRef, "/admins"))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          setAdminList(snapshot.val());
-        } else {
-          console.log("No data available");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    getAdmin().then((admins) => {
+      setAdminList(admins);
+    });
 
     authService.onAuthStateChanged(async (user) => {
       if (user) {
