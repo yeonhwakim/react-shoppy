@@ -5,6 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { createImageUrl } from "../api/cloudinary";
 import { addProduct } from "../api/firebase";
 
+import File from "../components/File";
+import Input from "../components/Input";
+import Select from "../components/Select";
+import Button from "../components/Button";
+
 const options = [
   { value: "1", option: "xs,s,m,l,xl" },
   { value: "2", option: "xxs,xs,s,m,l,xl,xx" },
@@ -14,7 +19,14 @@ const options = [
   { value: "6", option: "r,t,y" },
 ];
 
-function NewProduct(props) {
+const inputList = [
+  { name: "name", type: "text", placeholder: "제품명" },
+  { name: "price", type: "number", placeholder: "가격" },
+  { name: "category", type: "text", placeholder: "카테고리" },
+  { name: "description", type: "text", placeholder: "제품설명" },
+];
+
+function NewProduct() {
   const navigate = useNavigate();
 
   const [file, setFile] = useState({});
@@ -27,7 +39,7 @@ function NewProduct(props) {
     option: "",
   });
 
-  const { image, name, price, category, description } = product;
+  const { image } = product;
 
   const handleChangeProduct = (e) => {
     const { name, value } = e.target;
@@ -80,70 +92,17 @@ function NewProduct(props) {
     <div className="p-4 flex flex flex-col items-center">
       {image && <img className="mb-2 " src={image} alt="이미지" />}
       <form onSubmit={handleSubmit}>
-        <input
-          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
-          type="file"
-          name="image"
-          onChange={handleChangeImage}
-          required
-        />
-        <input
-          className="rounded-md border-2 p-2  mb-2 w-full border-zinc-700"
-          type="text"
-          name="name"
-          value={name}
-          placeholder="제품명"
-          onChange={handleChangeProduct}
-          required
-        />
-        <input
-          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
-          type="text"
-          name="price"
-          value={price}
-          placeholder="가격"
-          onChange={handleChangeProduct}
-          required
-        />
-        <input
-          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
-          type="text"
-          name="category"
-          value={category}
-          placeholder="카테고리"
-          onChange={handleChangeProduct}
-          required
-        />
-        <input
-          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700"
-          type="text"
-          name="description"
-          value={description}
-          placeholder="제품설명"
-          onChange={handleChangeProduct}
-          required
-        />
-        <select
-          className="rounded-md border-2 p-2 mb-2 w-full border-zinc-700 no-arrow"
-          name="option"
-          onChange={handleChangeProduct}
-          required
-        >
-          <option value="" defaultValue>
-            옵션들(콤마(,)로 구분)
-          </option>
-          {options.map(({ value, option }) => (
-            <option value={value} key={value}>
-              {option}
-            </option>
-          ))}
-        </select>
-        <button
-          className="rounded-md border-2 p-2 mb-2 w-full border-black bg-black text-white"
-          type="submit"
-        >
-          제품 등록하기
-        </button>
+        <File handleChangeImage={handleChangeImage} />
+        {inputList.map((inputItem) => (
+          <Input
+            key={inputItem.name}
+            inputItem={inputItem}
+            value={product[inputItem.name]}
+            handleChangeProduct={handleChangeProduct}
+          />
+        ))}
+        <Select options={options} handleChangeProduct={handleChangeProduct} />
+        <Button title={"제품 등록하기"} />
       </form>
     </div>
   );
