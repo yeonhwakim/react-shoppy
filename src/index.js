@@ -6,12 +6,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 
 import App from "./App";
-import Error from "./components/Error";
-import Home from "./components/Home";
-import Products from "./components/Products";
-import Product from "./components/Product";
-import Cart from "./components/Cart";
-import Admin from "./components/Admin";
+import Error from "./pages/Error";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import Product from "./pages/Product";
+import Cart from "./pages/Cart";
+import NewProduct from "./pages/NewProduct";
 
 import reportWebVitals from "./reportWebVitals";
 
@@ -21,11 +21,16 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <Error />,
     children: [
-      { index: true, element: <Home /> },
+      { path: "/", index: true, element: <Home /> },
       { path: "/products", element: <Products /> },
-      { path: "/product/:id", element: <Product /> },
+      {
+        path: "/product",
+        children: [
+          { path: ":id", element: <Product /> },
+          { path: "new", element: <NewProduct /> },
+        ],
+      },
       { path: "/cart", element: <Cart /> },
-      { path: "/admin", element: <Admin /> },
     ],
   },
 ]);

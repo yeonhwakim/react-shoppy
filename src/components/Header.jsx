@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   AiOutlineSmile,
@@ -10,7 +10,6 @@ import {
 import { useFirebase } from "../context/LoginContext";
 
 function Header() {
-  const navigate = useNavigate();
   const {
     isLogin,
     userName,
@@ -23,32 +22,26 @@ function Header() {
 
   return (
     <nav className="flex items-center justify-between p-4">
-      <button
+      <Link
+        to="/"
         className="flex items-center justify-between text-3xl font-bold"
-        onClick={() => navigate("/")}
       >
         <AiOutlineSmile className="mr-2" /> SHOPPY
-      </button>
+      </Link>
       <div className="flex items-center">
-        <button
-          className="text-xl font-semibold"
-          onClick={() => navigate("/products")}
-        >
+        <Link to="/products" className="text-xl font-semibold">
           products
-        </button>
-        <button
-          className="relative w-7 h-7 ml-2 mr-2.5"
-          onClick={() => navigate("/cart")}
-        >
+        </Link>
+        <Link to="/cart" className="relative w-7 h-7 ml-2 mr-2.5">
           <AiOutlineShoppingCart className="block w-7 h-7 absolute inset-0 font-bold" />
           <div className="absolute absolute flex items-center justify-center rounded-full bg-black text-white -top-1.5 -right-1.5  w-4 h-4 text-xs font-semibold">
             {cart}
           </div>
-        </button>
+        </Link>
         {isAdmin && (
-          <button className="w-7 h-7 mr-2" onClick={() => navigate("/admin")}>
+          <Link to="/product/new" className="w-7 h-7 mr-2">
             <AiOutlineEdit className="block w-7 h-7 font-bold" />
-          </button>
+          </Link>
         )}
         {isLogin && (
           <div className="mr-2 flex items-center justify-center">
