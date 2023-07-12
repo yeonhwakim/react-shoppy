@@ -6,12 +6,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 
 import App from "./App";
-import Error from "./components/Error";
-import Home from "./components/Home";
-import Products from "./components/Products";
-import Product from "./components/Product";
-import Cart from "./components/Cart";
-import NewProduct from "./components/NewProduct";
+import Error from "./pages/Error";
+import Home from "./pages/Home";
+import Products from "./pages/Products";
+import Product from "./pages/Product";
+import Cart from "./pages/Cart";
+import NewProduct from "./pages/NewProduct";
 
 import reportWebVitals from "./reportWebVitals";
 
