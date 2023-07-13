@@ -6,7 +6,8 @@ import { getProduct, addCart, isProductInCart } from "../api/firebase";
 
 function Product() {
   const { id } = useParams();
-  const { isLogin, userEmail, handleClickLogin, handleAddCart } = useFirebase();
+  const { user, handleClickLogin, handleAddCart } = useFirebase();
+  const { email } = user;
 
   const [product, setProduct] = useState({});
   const [selectOption, setSelectOption] = useState({});
@@ -20,7 +21,7 @@ function Product() {
   }, [id]);
 
   const handleClickCart = async () => {
-    if (!isLogin) {
+    if (!user) {
       const confirm = window.confirm("로그인 해주세요!");
 
       if (confirm) {
@@ -35,7 +36,7 @@ function Product() {
 
     if (confirm) {
       const isProduct = await isProductInCart({
-        userEmail,
+        email,
         productId: id,
         selectOption,
       });
@@ -50,7 +51,7 @@ function Product() {
         }
 
         const result = await addCart({
-          userEmail,
+          email,
           product: Object.assign(
             { ...product },
             { selectOption, count: isProduct.count + 1, productId: id }
@@ -67,7 +68,7 @@ function Product() {
       }
 
       const result = await addCart({
-        userEmail,
+        email,
         product: Object.assign(
           { ...product },
           { selectOption, count: 1, productId: id }
