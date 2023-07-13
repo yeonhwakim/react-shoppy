@@ -8,17 +8,11 @@ import {
 } from "react-icons/ai";
 
 import { useFirebase } from "../context/LoginContext";
+import LgButton from "./LgButton";
+import User from "./User";
 
 function Header() {
-  const {
-    isLogin,
-    userName,
-    userProfile,
-    cart,
-    isAdmin,
-    handleClickLogin,
-    handleClickLogout,
-  } = useFirebase();
+  const { user, handleLogin, handleLogout, cart, isAdmin } = useFirebase();
 
   return (
     <nav className="flex items-center justify-between p-4">
@@ -43,31 +37,9 @@ function Header() {
             <AiOutlineEdit className="block w-7 h-7 font-bold" />
           </Link>
         )}
-        {isLogin && (
-          <div className="mr-2 flex items-center justify-center">
-            <img
-              className="w-7 h-7 mr-1 rounded-full bg-black"
-              src={userProfile}
-              alt={`${userName} 프로필`}
-            />
-            <span className="text-xl font-semibold">{userName}</span>
-          </div>
-        )}
-        {isLogin ? (
-          <button
-            className="text-xl font-semibold border-2 border-stone-600 rounded px-2"
-            onClick={handleClickLogout}
-          >
-            Logout
-          </button>
-        ) : (
-          <button
-            className="text-xl font-semibold border-2 border-stone-600 rounded px-2"
-            onClick={handleClickLogin}
-          >
-            Login
-          </button>
-        )}
+        {user && <User user={user} />}
+        {!user && <LgButton title={"Login"} handleClick={handleLogin} />}
+        {user && <LgButton title={"Logout"} handleClick={handleLogout} />}
       </div>
     </nav>
   );
