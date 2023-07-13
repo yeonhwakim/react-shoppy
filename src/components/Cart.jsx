@@ -13,12 +13,14 @@ import { useFirebase } from "../context/LoginContext";
 import { getProductInCart, removeCart, addCart } from "../api/firebase";
 
 function Cart() {
-  const { userEmail } = useFirebase();
+  const {
+    user: { email },
+  } = useFirebase();
   const [products, setProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    getProductInCart({ userEmail }).then((cart) => {
+    getProductInCart({ email }).then((cart) => {
       cart.forEach((cartProducts) => {
         Object.values(cartProducts).forEach((product) => {
           const { price, count } = product;
@@ -39,7 +41,7 @@ function Cart() {
     const product = products[idx];
 
     await addCart({
-      userEmail,
+      email,
       product: {
         ...product,
         count: product.count + 1,
@@ -61,7 +63,7 @@ function Cart() {
 
     if (count - 1 < 1) {
       await removeCart({
-        userEmail,
+        email,
         product,
       });
       setTotalPrice((prev) => prev - +price);
@@ -70,7 +72,7 @@ function Cart() {
     }
 
     await addCart({
-      userEmail,
+      email,
       product: {
         ...product,
         count: count - 1,
@@ -87,7 +89,7 @@ function Cart() {
     const { count, price } = product;
 
     await removeCart({
-      userEmail,
+      email,
       product,
     });
 

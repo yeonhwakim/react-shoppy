@@ -1,6 +1,14 @@
 import app from "../config/firebase";
 
 import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
+
+import {
   getDatabase,
   ref,
   set,
@@ -10,7 +18,21 @@ import {
   remove,
 } from "firebase/database";
 
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 const db = getDatabase(app);
+
+export function login() {
+  return signInWithPopup(auth, provider).catch(console.error);
+}
+
+export function logout() {
+  return signOut(auth).catch(console.error);
+}
+
+export async function onUserStateChange(callback) {
+  return onAuthStateChanged(auth, callback);
+}
 
 export function getAdmin() {
   try {
@@ -98,14 +120,11 @@ export function getProduct({ id }) {
   }
 }
 
-export function isProductInCart({ userEmail, productId, selectOption }) {
+export function isProductInCart({ email, productId, selectOption }) {
   try {
     const dbRef = ref(db);
     return get(
-      child(
-        dbRef,
-        `carts/${userEmail.split("@")[0]}/${productId}/${selectOption}`
-      )
+      child(dbRef, `carts/${email.split("@")[0]}/${productId}/${selectOption}`)
     )
       .then((snapshot) => {
         return snapshot.exists() ? snapshot.val() : false;
@@ -119,11 +138,11 @@ export function isProductInCart({ userEmail, productId, selectOption }) {
   }
 }
 
-export function addCart({ userEmail, product }) {
+export function addCart({ email, product }) {
   try {
     const { productId, selectOption } = product;
     set(
-      ref(db, `carts/${userEmail.split("@")[0]}/${productId}/${selectOption}`),
+      ref(db, `carts/${email.split("@")[0]}/${productId}/${selectOption}`),
       product
     );
     return true;
@@ -133,11 +152,11 @@ export function addCart({ userEmail, product }) {
   }
 }
 
-export function removeCart({ userEmail, product }) {
+export function removeCart({ email, product }) {
   try {
     const { productId, selectOption } = product;
     remove(
-      ref(db, `carts/${userEmail.split("@")[0]}/${productId}/${selectOption}`)
+      ref(db, `carts/${email.split("@")[0]}/${productId}/${selectOption}`)
     );
     return true;
   } catch (error) {
@@ -146,9 +165,9 @@ export function removeCart({ userEmail, product }) {
   }
 }
 
-export function getProductInCartCount({ userEmail }) {
+export function getProductInCartCount({ email }) {
   try {
-    return get(child(ref(db), `carts/${userEmail.split("@")[0]}`))
+    return get(child(ref(db), `carts/${email.split("@")[0]}`))
       .then((snapshot) => {
         return snapshot.exists()
           ? Object.keys(Object.values(snapshot.val())[0]).length
@@ -163,9 +182,9 @@ export function getProductInCartCount({ userEmail }) {
   }
 }
 
-export function getProductInCart({ userEmail }) {
+export function getProductInCart({ email }) {
   try {
-    return get(child(ref(db), `/carts/${userEmail.split("@")[0]}`))
+    return get(child(ref(db), `/carts/${email.split("@")[0]}`))
       .then((snapshot) => {
         return snapshot.exists()
           ? Object.values(Object.values(snapshot.val())[0])
