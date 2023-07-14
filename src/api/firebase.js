@@ -31,27 +31,32 @@ export function logout() {
 }
 
 export async function onUserStateChange(callback) {
-  return onAuthStateChanged(auth, callback);
+  return onAuthStateChanged(auth, async (user) => {
+    const updatedUser = user ? await adminUser(user) : null;
+
+    callback(updatedUser);
+  });
 }
 
-export function getAdmin() {
-  try {
-    const dbRef = ref(db);
-    return get(child(dbRef, "/admins"))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          return snapshot.val();
-        } else {
-          console.log("No data available");
+function adminUser(user) {
+  return get(ref(db, "/admins"))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const admins = snapshot.val();
+        const isAdmin = admins.includes(user.uid);
+
+        if (isAdmin) {
+          return { ...user, isAdmin };
         }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
+
+        return user;
+      } else {
+        console.log("No data available");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 }
 
 export function addUser(user) {

@@ -30,7 +30,9 @@ const inputList = [
 
 function NewProduct() {
   const navigate = useNavigate();
-  const { isAdmin } = useFirebase();
+  const {
+    user: { isAdmin },
+  } = useFirebase();
 
   useEffect(() => {
     !isAdmin && navigate("/");

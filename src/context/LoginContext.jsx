@@ -4,7 +4,6 @@ import app from "../config/firebase";
 import { getAuth } from "firebase/auth";
 
 import {
-  getAdmin,
   addUser,
   getProductInCartCount,
   login,
@@ -18,22 +17,15 @@ export const LoginContext = createContext();
 
 export function LoginContextProvider({ children }) {
   const [user, setUser] = useState({});
-  const [adminList, setAdminList] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [cart, setCart] = useState(0);
 
   useEffect(() => {
     onUserStateChange(setUser);
 
-    getAdmin().then((admins) => {
-      setAdminList(admins);
-    });
-
     authService.onAuthStateChanged(async (user) => {
       if (user) {
         const { displayName, photoURL, email } = user;
         await addUser({ displayName, photoURL, email });
-        ~adminList.indexOf(email) && setIsAdmin(true);
       }
     });
   }, []);
@@ -63,7 +55,6 @@ export function LoginContextProvider({ children }) {
         user,
         handleLogin,
         handleLogout,
-        isAdmin,
         cart,
         handleAddCart,
       }}

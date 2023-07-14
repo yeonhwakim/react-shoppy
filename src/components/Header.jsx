@@ -12,7 +12,8 @@ import LgButton from "./LgButton";
 import User from "./User";
 
 function Header() {
-  const { user, handleLogin, handleLogout, cart, isAdmin } = useFirebase();
+  const { user, handleLogin, handleLogout, cart } = useFirebase();
+  const { isAdmin } = user;
 
   return (
     <nav className="flex items-center justify-between p-4">
@@ -32,7 +33,7 @@ function Header() {
             {cart}
           </div>
         </Link>
-        {isAdmin && (
+        {user && isAdmin && (
           <Link to="/product/new" className="w-7 h-7 mr-2">
             <AiOutlineEdit className="block w-7 h-7 font-bold" />
           </Link>
