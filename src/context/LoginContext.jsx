@@ -16,7 +16,7 @@ const authService = getAuth(app);
 export const LoginContext = createContext();
 
 export function LoginContextProvider({ children }) {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState();
   const [cart, setCart] = useState(0);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export function LoginContextProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    Object.keys(user).length &&
+    user &&
       getProductInCartCount({ email: user?.email }).then((count) => {
         setCart(count);
       });
@@ -41,20 +41,12 @@ export function LoginContextProvider({ children }) {
     setCart((prevCount) => prevCount + 1);
   };
 
-  const handleLogin = () => {
-    login();
-  };
-
-  const handleLogout = () => {
-    logout();
-  };
-
   return (
     <LoginContext.Provider
       value={{
         user,
-        handleLogin,
-        handleLogout,
+        login,
+        logout,
         cart,
         handleAddCart,
       }}
