@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
 import { createImageUrl } from "../api/cloudinary";
 import { addProduct } from "../api/firebase";
-
-import { useFirebase } from "../context/LoginContext";
 
 import File from "../components/File";
 import Input from "../components/Input";
@@ -30,13 +28,6 @@ const inputList = [
 
 function NewProduct() {
   const navigate = useNavigate();
-  const {
-    user: { isAdmin },
-  } = useFirebase();
-
-  useEffect(() => {
-    !isAdmin && navigate("/");
-  }, []);
 
   const [file, setFile] = useState({});
   const [product, setProduct] = useState({
