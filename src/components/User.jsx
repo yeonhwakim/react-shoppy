@@ -2,7 +2,7 @@ import React from "react";
 
 function User({ user: { photoURL, displayName } }) {
   return (
-    <div className="mr-2 flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <img
         className="w-7 h-7 mr-1 rounded-full bg-black"
         src={photoURL}

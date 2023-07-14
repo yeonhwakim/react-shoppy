@@ -14,6 +14,7 @@ import Cart from "./pages/Cart";
 import NewProduct from "./pages/NewProduct";
 
 import reportWebVitals from "./reportWebVitals";
+import ProtectedRoute from "./pages/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -27,10 +28,24 @@ const router = createBrowserRouter([
         path: "/product",
         children: [
           { path: ":id", element: <Product /> },
-          { path: "new", element: <NewProduct /> },
+          {
+            path: "new",
+            element: (
+              <ProtectedRoute adminRequired>
+                <NewProduct />
+              </ProtectedRoute>
+            ),
+          },
         ],
       },
-      { path: "/cart", element: <Cart /> },
+      {
+        path: "/cart",
+        element: (
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);

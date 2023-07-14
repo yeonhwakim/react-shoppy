@@ -4,7 +4,6 @@ import app from "../config/firebase";
 import { getAuth } from "firebase/auth";
 
 import {
-  getAdmin,
   addUser,
   getProductInCartCount,
   login,
@@ -17,29 +16,22 @@ const authService = getAuth(app);
 export const LoginContext = createContext();
 
 export function LoginContextProvider({ children }) {
-  const [user, setUser] = useState({});
-  const [adminList, setAdminList] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState();
   const [cart, setCart] = useState(0);
 
   useEffect(() => {
     onUserStateChange(setUser);
 
-    getAdmin().then((admins) => {
-      setAdminList(admins);
-    });
-
     authService.onAuthStateChanged(async (user) => {
       if (user) {
         const { displayName, photoURL, email } = user;
         await addUser({ displayName, photoURL, email });
-        ~adminList.indexOf(email) && setIsAdmin(true);
       }
     });
   }, []);
 
   useEffect(() => {
-    Object.keys(user).length &&
+    user &&
       getProductInCartCount({ email: user?.email }).then((count) => {
         setCart(count);
       });
@@ -49,21 +41,12 @@ export function LoginContextProvider({ children }) {
     setCart((prevCount) => prevCount + 1);
   };
 
-  const handleLogin = () => {
-    login();
-  };
-
-  const handleLogout = () => {
-    logout();
-  };
-
   return (
     <LoginContext.Provider
       value={{
         user,
-        handleLogin,
-        handleLogout,
-        isAdmin,
+        login,
+        logout,
         cart,
         handleAddCart,
       }}
