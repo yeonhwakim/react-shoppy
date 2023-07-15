@@ -16,7 +16,7 @@ function ProductItem({ product, handleClickProduct }) {
       <img className="w-50" src={image} alt={`${name} 이미지`} />
       <div className="w-full p-2">
         <div className="flex flex-row justify-between">
-          <span className="text-base font-bold">{name}</span>
+          <span className="text-base font-bold truncate">{name}</span>
           <span className="text-base font-bold">₩{price}</span>
         </div>
         <div>

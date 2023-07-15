@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 import { getProducts } from "../api/firebase";
 
@@ -8,13 +9,11 @@ import ProductList from "../components/ProductList";
 function Home() {
   const navigate = useNavigate();
 
-  const [products, setProduct] = useState([]);
-
-  useEffect(() => {
-    getProducts().then((products) => {
-      setProduct(products);
-    });
-  }, []);
+  const {
+    isLoading,
+    error,
+    data: products,
+  } = useQuery(["products"], getProducts);
 
   const handleClickProduct = (id) => {
     navigate("/product/" + id);
@@ -26,10 +25,14 @@ function Home() {
         <p className="text-white font-bold text-2xl mb-2">OPENING SALE!</p>
         <p className="text-white">2023.06.01~2023.06.30</p>
       </div>
-      <ProductList
-        products={products}
-        handleClickProduct={handleClickProduct}
-      />
+      {isLoading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {products && (
+        <ProductList
+          products={products}
+          handleClickProduct={handleClickProduct}
+        />
+      )}
     </div>
   );
 }
