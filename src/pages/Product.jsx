@@ -11,7 +11,7 @@ function Product() {
 
   const [product, setProduct] = useState({});
   const [selectOption, setSelectOption] = useState({});
-  const { category, description, image, name, option, price } = product;
+  const { category, description, image, name, options, price } = product;
 
   useEffect(() => {
     getProduct({ id }).then((product) => {
@@ -110,8 +110,8 @@ function Product() {
                 className="outline-0 w-11/12 border-2 border-dashed border-black"
                 onChange={handleChangeOption}
               >
-                {option &&
-                  option.split(",").map((item) => (
+                {options &&
+                  options.map((item) => (
                     <option value={item} key={item}>
                       {item}
                     </option>

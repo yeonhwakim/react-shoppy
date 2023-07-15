@@ -10,6 +10,7 @@ import { getProductInCart, removeCart, addCart } from "../api/firebase";
 import CartList from "../components/CartList";
 import PriceBox from "../components/PriceBox";
 import Button from "../components/Button";
+import Title from "../components/Title";
 
 function Cart() {
   const {
@@ -97,10 +98,8 @@ function Cart() {
 
   return (
     <div className="px-4">
-      <div className="py-5 text-center text-xl font-bold border-t-2 border-zinc-700">
-        내 장바구니
-      </div>
-      <div className="px-4 pt-4 pb-1 border-t-2 border-b-2 border-zinc-700">
+      <Title title={"장바구니"} />
+      <div className="px-4 pt-4 pb-1">
         <CartList
           products={products}
           incrementProduct={incrementProduct}
