@@ -8,6 +8,7 @@ import { addProduct } from "../api/firebase";
 import File from "../components/File";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import Title from "../components/Title";
 
 const inputList = [
   { name: "name", type: "text", placeholder: "제품명" },
@@ -77,20 +78,23 @@ function NewProduct() {
   };
 
   return (
-    <div className="p-4 flex flex flex-col items-center">
-      {image && <img className="mb-2 " src={image} alt="이미지" />}
-      <form onSubmit={handleSubmit}>
-        <File handleChangeImage={handleChangeImage} />
-        {inputList.map((inputItem) => (
-          <Input
-            key={inputItem.name}
-            inputItem={inputItem}
-            value={product[inputItem.name]}
-            handleChangeProduct={handleChangeProduct}
-          />
-        ))}
-        <Button title={"제품 등록하기"} />
-      </form>
+    <div>
+      <Title title={"새로운 제품 등록"} />
+      <div className="p-4 flex flex flex-col items-center">
+        {image && <img className="mb-2 " src={image} alt="이미지" />}
+        <form onSubmit={handleSubmit}>
+          <File handleChangeImage={handleChangeImage} />
+          {inputList.map((inputItem) => (
+            <Input
+              key={inputItem.name}
+              inputItem={inputItem}
+              value={product[inputItem.name]}
+              handleChangeProduct={handleChangeProduct}
+            />
+          ))}
+          <Button title={"제품 등록하기"} />
+        </form>
+      </div>
     </div>
   );
 }
