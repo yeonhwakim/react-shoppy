@@ -15,8 +15,8 @@ function Home() {
     data: products,
   } = useQuery(["products"], getProducts);
 
-  const handleClickProduct = (id) => {
-    navigate("/product/" + id);
+  const handleClickProduct = (id, product) => {
+    navigate("/product/" + id, { state: { product } });
   };
 
   return (
