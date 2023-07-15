@@ -97,8 +97,11 @@ function Product() {
           </div>
           <p className="py-2 text-base text-gray-600">{description}</p>
           <div className="flex flex-row justify-between">
-            <span className="text-base">옵션 </span>
+            <label htmlFor="select" className="text-base">
+              옵션
+            </label>
             <select
+              id="select"
               className="outline-0 w-11/12 border-2 border-dashed border-black"
               onChange={handleChangeOption}
               selected={selectOption}
