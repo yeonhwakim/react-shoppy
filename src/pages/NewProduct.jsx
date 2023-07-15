@@ -24,6 +24,7 @@ function NewProduct() {
   const navigate = useNavigate();
 
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState({});
   const [product, setProduct] = useState({
     image: "",
@@ -80,12 +81,14 @@ function NewProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsUploading(true);
     const image = await createImageUrl({ file });
 
     // 정보 저장 => firebase
     const result = await addProduct({ product: { ...product, image } });
 
     if (result) {
+      setIsUploading(false);
       setIsSuccess(true);
       return;
     }
@@ -98,7 +101,7 @@ function NewProduct() {
       <Title title={"새로운 제품 등록"} />
       <div className="p-4 flex flex flex-col items-center">
         {isSuccess && (
-          <div className="flext flex-row">
+          <div className="flex flex-row">
             <AiFillCheckSquare className="block w-7 h-7 text-lime-400 ml-2" />
             제품 등록이 완료 됬습니다.
           </div>
@@ -114,7 +117,7 @@ function NewProduct() {
               handleChangeProduct={handleChangeProduct}
             />
           ))}
-          <Button title={"제품 등록하기"} />
+          <Button title={isUploading ? "제품 등록중..." : "제품 등록하기"} />
         </form>
       </div>
     </div>
