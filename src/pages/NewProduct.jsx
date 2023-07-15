@@ -80,13 +80,7 @@ function NewProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // 이미지 url 생성 => cloudinary
-    const formData = new FormData();
-
-    formData.append("file", file);
-    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); // unsigned preset => setting 에서 확인 가능
-
-    const image = await createImageUrl({ formData });
+    const image = await createImageUrl({ file });
 
     // 정보 저장 => firebase
     const result = await addProduct({ product: { ...product, image } });
