@@ -5,7 +5,6 @@ import { IoTrash } from "react-icons/io5";
 
 function CartItem({
   product,
-  index,
   decrementProduct,
   incrementProduct,
   removeProduct,
@@ -24,15 +23,15 @@ function CartItem({
       </div>
       <div className="flex flex-row items-center">
         <div className="flex flex-row items-center">
-          <button onClick={() => decrementProduct(index)}>
+          <button onClick={() => decrementProduct(product)}>
             <AiOutlineMinusSquare className="w-6 h-6" />
           </button>
           <span className="text-lg font-bold px-2">{count}</span>
-          <button onClick={() => incrementProduct(index)}>
+          <button onClick={() => incrementProduct(product)}>
             <AiOutlinePlusSquare className="w-6 h-6" />
           </button>
         </div>
-        <button onClick={() => removeProduct(index)}>
+        <button onClick={() => removeProduct(product)}>
           <IoTrash className="w-6 h-6 ml-2" />
         </button>
       </div>

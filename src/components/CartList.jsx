@@ -14,7 +14,6 @@ function ProductList({
         products.map((product, index) => (
           <CartItem
             key={index}
-            index={index}
             product={product}
             decrementProduct={decrementProduct}
             incrementProduct={incrementProduct}
