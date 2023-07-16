@@ -74,7 +74,7 @@ export function addProduct({ product, image }) {
   }
 }
 
-export function getProducts() {
+export async function getProducts() {
   try {
     const dbRef = ref(db);
     return get(child(dbRef, "/products"))
@@ -148,9 +148,9 @@ export function removeCart({ userId, product }) {
   }
 }
 
-export function getProductInCartCount({ userId }) {
+export async function getProductInCartCount({ userId }) {
   try {
-    return get(child(ref(db), `carts/${userId}`))
+    return get(ref(db), `carts/${userId}`)
       .then((snapshot) => {
         return snapshot.exists()
           ? Object.keys(Object.values(snapshot.val())[0]).length

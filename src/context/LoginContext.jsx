@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import {
   getProductInCartCount,
@@ -11,21 +12,17 @@ export const LoginContext = createContext();
 
 export function LoginContextProvider({ children }) {
   const [user, setUser] = useState();
-  const [cart, setCart] = useState(0);
 
   useEffect(() => {
     onUserStateChange(setUser);
   }, []);
 
-  useEffect(() => {
-    user &&
-      getProductInCartCount({ userId: user && user.uid }).then((count) => {
-        setCart(count);
-      });
-  }, []);
+  const { data: cartCount } = useQuery(["cartCount"], () =>
+    getProductInCartCount({ userId: user && user.uid })
+  );
 
   const handleAddCart = async () => {
-    setCart((prevCount) => prevCount + 1);
+    // setCart((prevCount) => prevCount + 1);
   };
 
   return (
@@ -33,9 +30,9 @@ export function LoginContextProvider({ children }) {
       value={{
         user,
         userId: user && user.uid,
+        cartCount,
         login,
         logout,
-        cart,
         handleAddCart,
       }}
     >

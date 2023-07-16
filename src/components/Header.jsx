@@ -12,7 +12,7 @@ import LgButton from "./LgButton";
 import User from "./User";
 
 function Header() {
-  const { user, login, logout, cart } = useFirebase();
+  const { user, login, logout, cartCount } = useFirebase();
 
   return (
     <nav className="flex items-center justify-between p-4">
@@ -30,7 +30,7 @@ function Header() {
           <Link to="/cart" className="relative w-7 h-7">
             <AiOutlineShoppingCart className="block w-7 h-7 absolute inset-0 font-bold" />
             <div className="absolute absolute flex items-center justify-center rounded-full bg-black text-white -top-1.5 -right-1.5  w-4 h-4 text-xs font-semibold">
-              {cart}
+              {cartCount}
             </div>
           </Link>
         )}

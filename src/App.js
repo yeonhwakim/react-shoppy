@@ -11,12 +11,12 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <div className="App">
-      <LoginContextProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <LoginContextProvider>
           <Header />
           <Outlet />
-        </QueryClientProvider>
-      </LoginContextProvider>
+        </LoginContextProvider>
+      </QueryClientProvider>
     </div>
   );
 }
