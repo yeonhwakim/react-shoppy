@@ -55,7 +55,7 @@ function adminUser(user) {
 
 export function addUser(user) {
   try {
-    set(ref(db, `users/${user.email.split("@")[0]}`), user);
+    set(ref(db, `users/${user.uid}`), user);
     return true;
   } catch (error) {
     console.error(error);
@@ -110,12 +110,10 @@ export function getProduct({ id }) {
   }
 }
 
-export function isProductInCart({ email, productId, selectOption }) {
+export function isProductInCart({ userId, productId, selectOption }) {
   try {
     const dbRef = ref(db);
-    return get(
-      child(dbRef, `carts/${email.split("@")[0]}/${productId}/${selectOption}`)
-    )
+    return get(child(dbRef, `carts/${userId}/${productId}/${selectOption}`))
       .then((snapshot) => {
         return snapshot.exists() ? snapshot.val() : false;
       })
@@ -128,13 +126,10 @@ export function isProductInCart({ email, productId, selectOption }) {
   }
 }
 
-export function addCart({ email, product }) {
+export function addCart({ userId, product }) {
   try {
     const { productId, selectOption } = product;
-    set(
-      ref(db, `carts/${email.split("@")[0]}/${productId}/${selectOption}`),
-      product
-    );
+    set(ref(db, `carts/${userId}/${productId}/${selectOption}`), product);
     return true;
   } catch (error) {
     console.error(error);
@@ -142,12 +137,10 @@ export function addCart({ email, product }) {
   }
 }
 
-export function removeCart({ email, product }) {
+export function removeCart({ userId, product }) {
   try {
     const { productId, selectOption } = product;
-    remove(
-      ref(db, `carts/${email.split("@")[0]}/${productId}/${selectOption}`)
-    );
+    remove(ref(db, `carts/${userId}/${productId}/${selectOption}`));
     return true;
   } catch (error) {
     console.error(error);
@@ -155,9 +148,9 @@ export function removeCart({ email, product }) {
   }
 }
 
-export function getProductInCartCount({ email }) {
+export function getProductInCartCount({ userId }) {
   try {
-    return get(child(ref(db), `carts/${email.split("@")[0]}`))
+    return get(child(ref(db), `carts/${userId}`))
       .then((snapshot) => {
         return snapshot.exists()
           ? Object.keys(Object.values(snapshot.val())[0]).length
@@ -172,9 +165,9 @@ export function getProductInCartCount({ email }) {
   }
 }
 
-export function getProductInCart({ email }) {
+export function getProductInCart({ userId }) {
   try {
-    return get(child(ref(db), `/carts/${email.split("@")[0]}`))
+    return get(child(ref(db), `/carts/${userId}`))
       .then((snapshot) => {
         return snapshot.exists()
           ? Object.values(Object.values(snapshot.val())[0])

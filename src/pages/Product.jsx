@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 
 import { useFirebase } from "../context/LoginContext";
@@ -9,9 +9,8 @@ function Product() {
   const {
     state: { product },
   } = useLocation();
-  const { user, handleClickLogin, handleAddCart } = useFirebase();
+  const { user, userId, handleClickLogin, handleAddCart } = useFirebase();
   const { category, description, image, name, options, price } = product;
-  // const { email } = user;
 
   const [selectOption, setSelectOption] = useState(options && options[0]);
 
@@ -31,7 +30,7 @@ function Product() {
 
     if (confirm) {
       const isProduct = await isProductInCart({
-        // email,
+        userId,
         productId: id,
         selectOption,
       });
@@ -46,7 +45,7 @@ function Product() {
         }
 
         const result = await addCart({
-          // email,
+          userId,
           product: Object.assign(
             { ...product },
             { selectOption, count: isProduct.count + 1, productId: id }
@@ -63,7 +62,7 @@ function Product() {
       }
 
       const result = await addCart({
-        // email,
+        userId,
         product: Object.assign(
           { ...product },
           { selectOption, count: 1, productId: id }

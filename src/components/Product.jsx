@@ -6,8 +6,7 @@ import { getProduct, addCart, isProductInCart } from "../api/firebase";
 
 function Product() {
   const { id } = useParams();
-  const { user, handleClickLogin, handleAddCart } = useFirebase();
-  const { email } = user;
+  const { user, userId, handleClickLogin, handleAddCart } = useFirebase();
 
   const [product, setProduct] = useState({});
   const [selectOption, setSelectOption] = useState({});
@@ -36,7 +35,7 @@ function Product() {
 
     if (confirm) {
       const isProduct = await isProductInCart({
-        email,
+        userId,
         productId: id,
         selectOption,
       });
@@ -51,7 +50,7 @@ function Product() {
         }
 
         const result = await addCart({
-          email,
+          userId,
           product: Object.assign(
             { ...product },
             { selectOption, count: isProduct.count + 1, productId: id }
@@ -68,7 +67,7 @@ function Product() {
       }
 
       const result = await addCart({
-        email,
+        userId,
         product: Object.assign(
           { ...product },
           { selectOption, count: 1, productId: id }

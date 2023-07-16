@@ -13,14 +13,12 @@ import Button from "../components/Button";
 import Title from "../components/Title";
 
 function Cart() {
-  const {
-    user: { email },
-  } = useFirebase();
+  const { userId } = useFirebase();
   const [products, setProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    getProductInCart({ email }).then((cart) => {
+    getProductInCart({ userId }).then((cart) => {
       cart.forEach((cartProducts) => {
         Object.values(cartProducts).forEach((product) => {
           const { price, count } = product;
@@ -41,7 +39,7 @@ function Cart() {
     const product = products[idx];
 
     await addCart({
-      email,
+      userId,
       product: {
         ...product,
         count: product.count + 1,
@@ -63,7 +61,7 @@ function Cart() {
 
     if (count - 1 < 1) {
       await removeCart({
-        email,
+        userId,
         product,
       });
       setTotalPrice((prev) => prev - +price);
@@ -72,7 +70,7 @@ function Cart() {
     }
 
     await addCart({
-      email,
+      userId,
       product: {
         ...product,
         count: count - 1,
@@ -89,7 +87,7 @@ function Cart() {
     const { count, price } = product;
 
     await removeCart({
-      email,
+      userId,
       product,
     });
 

@@ -1,17 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-import app from "../config/firebase";
-import { getAuth } from "firebase/auth";
-
 import {
-  addUser,
   getProductInCartCount,
   login,
   onUserStateChange,
   logout,
 } from "../api/firebase";
-
-const authService = getAuth(app);
 
 export const LoginContext = createContext();
 
@@ -21,18 +15,11 @@ export function LoginContextProvider({ children }) {
 
   useEffect(() => {
     onUserStateChange(setUser);
-
-    authService.onAuthStateChanged(async (user) => {
-      if (user) {
-        const { displayName, photoURL, email } = user;
-        await addUser({ displayName, photoURL, email });
-      }
-    });
   }, []);
 
   useEffect(() => {
     user &&
-      getProductInCartCount({ email: user?.email }).then((count) => {
+      getProductInCartCount({ userId: user && user.uid }).then((count) => {
         setCart(count);
       });
   }, []);
@@ -45,6 +32,7 @@ export function LoginContextProvider({ children }) {
     <LoginContext.Provider
       value={{
         user,
+        userId: user && user.uid,
         login,
         logout,
         cart,
