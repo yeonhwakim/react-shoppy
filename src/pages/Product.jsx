@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 
 import { useFirebase } from "../context/LoginContext";
 import { addCart, isProductInCart } from "../api/firebase";
+
+import Notification from "../components/Notification";
 
 function Product() {
   const { id } = useParams();
@@ -13,6 +15,20 @@ function Product() {
   const { category, description, image, name, options, price } = product;
 
   const [selectOption, setSelectOption] = useState(options && options[0]);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    let timeoutId = null;
+    if (isSuccess) {
+      timeoutId = setTimeout(() => {
+        setIsSuccess(false);
+      }, 4000);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isSuccess]);
 
   const handleClickCart = async () => {
     if (!user) {
@@ -53,7 +69,8 @@ function Product() {
         });
 
         if (result) {
-          return await handleAddCart();
+          await handleAddCart();
+          setIsSuccess(true);
         }
 
         return window.alert(
@@ -70,7 +87,9 @@ function Product() {
       });
 
       if (result) {
-        return await handleAddCart();
+        await handleAddCart();
+        setIsSuccess(true);
+        return;
       }
 
       return window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
@@ -113,6 +132,7 @@ function Product() {
                 ))}
             </select>
           </div>
+          {isSuccess && <Notification title={"장바구니에 담겼습니다."} />}
           <button
             className="rounded-md border-2 p-2 mb-2 w-full border-black bg-black text-white mt-4"
             onClick={handleClickCart}

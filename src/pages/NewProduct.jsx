@@ -5,12 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { createImageUrl } from "../api/cloudinary";
 import { addProduct } from "../api/firebase";
 
-import { AiFillCheckSquare } from "react-icons/ai";
-
 import File from "../components/File";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Title from "../components/Title";
+import Notification from "../components/Notification";
 
 const inputList = [
   { name: "name", type: "text", placeholder: "제품명" },
@@ -100,12 +99,7 @@ function NewProduct() {
     <div>
       <Title title={"새로운 제품 등록"} />
       <div className="p-4 flex flex flex-col items-center">
-        {isSuccess && (
-          <div className="flex flex-row">
-            <AiFillCheckSquare className="block w-7 h-7 text-lime-400 ml-2" />
-            제품 등록이 완료 됬습니다.
-          </div>
-        )}
+        {isSuccess && <Notification title={" 제품 등록이 완료 됬습니다."} />}
         {image && <img className="mb-2 " src={image} alt="이미지" />}
         <form onSubmit={handleSubmit}>
           <File handleChangeImage={handleChangeImage} />
