@@ -1,5 +1,7 @@
 import app from "../config/firebase";
 
+import { v4 as uuidv4 } from "uuid";
+
 import {
   getAuth,
   GoogleAuthProvider,
@@ -8,15 +10,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-import {
-  getDatabase,
-  ref,
-  set,
-  push,
-  get,
-  child,
-  remove,
-} from "firebase/database";
+import { getDatabase, ref, set, get, child, remove } from "firebase/database";
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -69,11 +63,10 @@ export function addUser(user) {
   }
 }
 
-export function addProduct({ product }) {
+export function addProduct({ product, image }) {
   try {
-    const productsListRef = ref(db, "products");
-    const newProductsRef = push(productsListRef);
-    set(newProductsRef, product);
+    const productId = uuidv4();
+    set(ref(db, `products/${productId}`), { ...product, image, id: productId });
     return true;
   } catch (error) {
     console.error(error);
@@ -86,15 +79,7 @@ export function getProducts() {
     const dbRef = ref(db);
     return get(child(dbRef, "/products"))
       .then((snapshot) => {
-        if (snapshot.exists()) {
-          const products = snapshot.val();
-          return Object.keys(products).map((key) => ({
-            ...products[key],
-            id: key,
-          }));
-        } else {
-          console.log("No data available");
-        }
+        return snapshot.exists() ? Object.values(snapshot.val()) : [];
       })
       .catch((error) => {
         console.error(error);

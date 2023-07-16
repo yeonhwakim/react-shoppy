@@ -85,7 +85,7 @@ function NewProduct() {
     const image = await createImageUrl({ file });
 
     // 정보 저장 => firebase
-    const result = await addProduct({ product: { ...product, image } });
+    const result = await addProduct({ product, image });
 
     if (result) {
       setIsUploading(false);
