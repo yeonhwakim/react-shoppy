@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
+import useProducts from "../hooks/useProducts";
+
 import { createImageUrl } from "../api/cloudinary";
-import { addProduct } from "../api/firebase";
 
 import File from "../components/File";
 import Input from "../components/Input";
@@ -21,6 +22,7 @@ const inputList = [
 
 function NewProduct() {
   const navigate = useNavigate();
+  const { addProduct } = useProducts();
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -83,16 +85,18 @@ function NewProduct() {
     setIsUploading(true);
     const image = await createImageUrl({ file });
 
-    // 정보 저장 => firebase
-    const result = await addProduct({ product, image });
-
-    if (result) {
-      setIsUploading(false);
-      setIsSuccess(true);
-      return;
-    }
-
-    return alert("오류 발생, 관리자에게 문의 바랍니다.");
+    addProduct.mutate(
+      { product, image },
+      {
+        onSuccess: () => {
+          setIsUploading(false);
+          setIsSuccess(true);
+        },
+        onError: () => {
+          alert("오류 발생, 관리자에게 문의 바랍니다.");
+        },
+      }
+    );
   };
 
   return (
