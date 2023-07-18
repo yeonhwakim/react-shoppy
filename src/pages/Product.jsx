@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 
 import { useFirebase } from "../context/LoginContext";
-import { addCart, isProductInCart } from "../api/firebase";
+
+import { isProductInCart } from "../api/firebase";
 
 import Notification from "../components/Notification";
+import useCart from "../hooks/useCart";
 
 function Product() {
   const { id } = useParams();
   const {
     state: { product },
   } = useLocation();
-  const { user, userId, handleClickLogin, handleAddCart } = useFirebase();
+  const { addCart } = useCart();
+  const { user, userId, handleClickLogin } = useFirebase();
   const { category, description, image, name, options, price } = product;
 
   const [selectOption, setSelectOption] = useState(options && options[0]);
@@ -59,40 +62,24 @@ function Product() {
         if (!confirm) {
           return;
         }
+      }
 
-        const result = await addCart({
-          userId,
+      addCart.mutate(
+        {
           product: Object.assign(
             { ...product },
-            { selectOption, count: isProduct.count + 1, productId: id }
+            { selectOption, count: 1, productId: id }
           ),
-        });
-
-        if (result) {
-          await handleAddCart();
-          setIsSuccess(true);
+        },
+        {
+          onSuccess: async () => {
+            setIsSuccess(true);
+          },
+          onError: () => {
+            window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+          },
         }
-
-        return window.alert(
-          "오류가 발생했습니다. 관리자에게 문의 부탁드립니다."
-        );
-      }
-
-      const result = await addCart({
-        userId,
-        product: Object.assign(
-          { ...product },
-          { selectOption, count: 1, productId: id }
-        ),
-      });
-
-      if (result) {
-        await handleAddCart();
-        setIsSuccess(true);
-        return;
-      }
-
-      return window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+      );
     }
 
     return;

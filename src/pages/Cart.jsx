@@ -1,12 +1,9 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
 
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { LuEqual } from "react-icons/lu";
 
-import { useFirebase } from "../context/LoginContext";
-
-import { getProductInCart, removeCart, addCart } from "../api/firebase";
+import useCart from "../hooks/useCart";
 
 import CartList from "../components/CartList";
 import PriceBox from "../components/PriceBox";
@@ -16,10 +13,12 @@ import Title from "../components/Title";
 const SHIPPING = 3000;
 
 function Cart() {
-  const { userId } = useFirebase();
-  const { isLoading, data: products } = useQuery(["cart"], () =>
-    getProductInCart({ userId })
-  );
+  const {
+    cartQuery: { isLoading, data: products },
+    addCart,
+    removeCart,
+  } = useCart();
+
   const totalPrice =
     products && products.reduce((prev, curr) => prev + +curr.price, 0);
 
@@ -27,9 +26,8 @@ function Cart() {
   if (products && products.length < 1)
     return <p>장바구니에 목록이 없습니다!</p>;
 
-  const incrementProduct = async (product) => {
-    await addCart({
-      userId,
+  const incrementProduct = (product) => {
+    addCart.mutate({
       product: {
         ...product,
         count: product.count + 1,
@@ -37,12 +35,11 @@ function Cart() {
     });
   };
 
-  const decrementProduct = async (product) => {
+  const decrementProduct = (product) => {
     const { count } = product;
     if (count < 2) return;
 
-    await addCart({
-      userId,
+    addCart.mutate({
       product: {
         ...product,
         count: count - 1,
@@ -50,9 +47,8 @@ function Cart() {
     });
   };
 
-  const removeProduct = async (product) => {
-    await removeCart({
-      userId,
+  const removeProduct = (product) => {
+    removeCart.mutate({
       product,
     });
   };

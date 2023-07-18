@@ -148,29 +148,12 @@ export function removeCart({ userId, product }) {
   }
 }
 
-export async function getProductInCartCount({ userId }) {
-  try {
-    return get(ref(db), `carts/${userId}`)
-      .then((snapshot) => {
-        return snapshot.exists()
-          ? Object.keys(Object.values(snapshot.val())[0]).length
-          : 0;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-export function getProductInCart({ userId }) {
+export async function getProductInCart({ userId }) {
   try {
     return get(child(ref(db), `/carts/${userId}`))
       .then((snapshot) => {
         return snapshot.exists()
-          ? Object.values(Object.values(snapshot.val())[0])
+          ? Object.values(snapshot.val()).map((item) => Object.values(item)[0])
           : [];
       })
       .catch((error) => {
