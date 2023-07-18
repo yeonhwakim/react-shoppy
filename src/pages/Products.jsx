@@ -1,19 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 
-import { getProducts } from "../api/firebase";
+import useProducts from "../hooks/useProducts";
 
 import ProductList from "../components/ProductList";
 
 function Products() {
   const navigate = useNavigate();
+  const { productsQuery } = useProducts();
 
-  const {
-    isLoading,
-    error,
-    data: products,
-  } = useQuery(["products"], getProducts);
+  const { isLoading, error, data: products } = productsQuery;
 
   const handleClickProduct = (id, product) => {
     navigate("/product/" + id, { state: { product } });

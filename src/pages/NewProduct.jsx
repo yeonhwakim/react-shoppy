@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import { createImageUrl } from "../api/cloudinary";
-import { addProduct } from "../api/firebase";
+import useProducts from "../hooks/useProducts";
 
-import { AiFillCheckSquare } from "react-icons/ai";
+import { createImageUrl } from "../api/cloudinary";
 
 import File from "../components/File";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import Title from "../components/Title";
+import Notification from "../components/Notification";
 
 const inputList = [
   { name: "name", type: "text", placeholder: "제품명" },
@@ -22,6 +22,7 @@ const inputList = [
 
 function NewProduct() {
   const navigate = useNavigate();
+  const { addProduct } = useProducts();
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -84,28 +85,25 @@ function NewProduct() {
     setIsUploading(true);
     const image = await createImageUrl({ file });
 
-    // 정보 저장 => firebase
-    const result = await addProduct({ product: { ...product, image } });
-
-    if (result) {
-      setIsUploading(false);
-      setIsSuccess(true);
-      return;
-    }
-
-    return alert("오류 발생, 관리자에게 문의 바랍니다.");
+    addProduct.mutate(
+      { product, image },
+      {
+        onSuccess: () => {
+          setIsUploading(false);
+          setIsSuccess(true);
+        },
+        onError: () => {
+          alert("오류 발생, 관리자에게 문의 바랍니다.");
+        },
+      }
+    );
   };
 
   return (
     <div>
       <Title title={"새로운 제품 등록"} />
       <div className="p-4 flex flex flex-col items-center">
-        {isSuccess && (
-          <div className="flex flex-row">
-            <AiFillCheckSquare className="block w-7 h-7 text-lime-400 ml-2" />
-            제품 등록이 완료 됬습니다.
-          </div>
-        )}
+        {isSuccess && <Notification title={" 제품 등록이 완료 됬습니다."} />}
         {image && <img className="mb-2 " src={image} alt="이미지" />}
         <form onSubmit={handleSubmit}>
           <File handleChangeImage={handleChangeImage} />

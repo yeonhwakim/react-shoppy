@@ -1,5 +1,7 @@
 import app from "../config/firebase";
 
+import { v4 as uuidv4 } from "uuid";
+
 import {
   getAuth,
   GoogleAuthProvider,
@@ -8,15 +10,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-import {
-  getDatabase,
-  ref,
-  set,
-  push,
-  get,
-  child,
-  remove,
-} from "firebase/database";
+import { getDatabase, ref, set, get, child, remove } from "firebase/database";
 
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -61,7 +55,7 @@ function adminUser(user) {
 
 export function addUser(user) {
   try {
-    set(ref(db, `users/${user.email.split("@")[0]}`), user);
+    set(ref(db, `users/${user.uid}`), user);
     return true;
   } catch (error) {
     console.error(error);
@@ -69,11 +63,10 @@ export function addUser(user) {
   }
 }
 
-export function addProduct({ product }) {
+export function addProduct({ product, image }) {
   try {
-    const productsListRef = ref(db, "products");
-    const newProductsRef = push(productsListRef);
-    set(newProductsRef, product);
+    const productId = uuidv4();
+    set(ref(db, `products/${productId}`), { ...product, image, id: productId });
     return true;
   } catch (error) {
     console.error(error);
@@ -81,20 +74,12 @@ export function addProduct({ product }) {
   }
 }
 
-export function getProducts() {
+export async function getProducts() {
   try {
     const dbRef = ref(db);
     return get(child(dbRef, "/products"))
       .then((snapshot) => {
-        if (snapshot.exists()) {
-          const products = snapshot.val();
-          return Object.keys(products).map((key) => ({
-            ...products[key],
-            id: key,
-          }));
-        } else {
-          console.log("No data available");
-        }
+        return snapshot.exists() ? Object.values(snapshot.val()) : [];
       })
       .catch((error) => {
         console.error(error);
@@ -125,12 +110,10 @@ export function getProduct({ id }) {
   }
 }
 
-export function isProductInCart({ email, productId, selectOption }) {
+export function isProductInCart({ userId, productId, selectOption }) {
   try {
     const dbRef = ref(db);
-    return get(
-      child(dbRef, `carts/${email.split("@")[0]}/${productId}/${selectOption}`)
-    )
+    return get(child(dbRef, `carts/${userId}/${productId}/${selectOption}`))
       .then((snapshot) => {
         return snapshot.exists() ? snapshot.val() : false;
       })
@@ -143,13 +126,10 @@ export function isProductInCart({ email, productId, selectOption }) {
   }
 }
 
-export function addCart({ email, product }) {
+export function addCart({ userId, product }) {
   try {
     const { productId, selectOption } = product;
-    set(
-      ref(db, `carts/${email.split("@")[0]}/${productId}/${selectOption}`),
-      product
-    );
+    set(ref(db, `carts/${userId}/${productId}/${selectOption}`), product);
     return true;
   } catch (error) {
     console.error(error);
@@ -157,12 +137,10 @@ export function addCart({ email, product }) {
   }
 }
 
-export function removeCart({ email, product }) {
+export function removeCart({ userId, product }) {
   try {
     const { productId, selectOption } = product;
-    remove(
-      ref(db, `carts/${email.split("@")[0]}/${productId}/${selectOption}`)
-    );
+    remove(ref(db, `carts/${userId}/${productId}/${selectOption}`));
     return true;
   } catch (error) {
     console.error(error);
@@ -170,29 +148,12 @@ export function removeCart({ email, product }) {
   }
 }
 
-export function getProductInCartCount({ email }) {
+export async function getProductInCart({ userId }) {
   try {
-    return get(child(ref(db), `carts/${email.split("@")[0]}`))
+    return get(child(ref(db), `/carts/${userId}`))
       .then((snapshot) => {
         return snapshot.exists()
-          ? Object.keys(Object.values(snapshot.val())[0]).length
-          : 0;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-export function getProductInCart({ email }) {
-  try {
-    return get(child(ref(db), `/carts/${email.split("@")[0]}`))
-      .then((snapshot) => {
-        return snapshot.exists()
-          ? Object.values(Object.values(snapshot.val())[0])
+          ? Object.values(snapshot.val()).map((item) => Object.values(item)[0])
           : [];
       })
       .catch((error) => {

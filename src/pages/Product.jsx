@@ -1,19 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 
 import { useFirebase } from "../context/LoginContext";
-import { addCart, isProductInCart } from "../api/firebase";
+
+import { isProductInCart } from "../api/firebase";
+
+import Notification from "../components/Notification";
+import useCart from "../hooks/useCart";
 
 function Product() {
   const { id } = useParams();
   const {
     state: { product },
   } = useLocation();
-  const { user, handleClickLogin, handleAddCart } = useFirebase();
+  const { addCart } = useCart();
+  const { user, userId, handleClickLogin } = useFirebase();
   const { category, description, image, name, options, price } = product;
-  // const { email } = user;
 
   const [selectOption, setSelectOption] = useState(options && options[0]);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    let timeoutId = null;
+    if (isSuccess) {
+      timeoutId = setTimeout(() => {
+        setIsSuccess(false);
+      }, 4000);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isSuccess]);
 
   const handleClickCart = async () => {
     if (!user) {
@@ -31,7 +49,7 @@ function Product() {
 
     if (confirm) {
       const isProduct = await isProductInCart({
-        // email,
+        userId,
         productId: id,
         selectOption,
       });
@@ -44,37 +62,24 @@ function Product() {
         if (!confirm) {
           return;
         }
+      }
 
-        const result = await addCart({
-          // email,
+      addCart.mutate(
+        {
           product: Object.assign(
             { ...product },
-            { selectOption, count: isProduct.count + 1, productId: id }
+            { selectOption, count: 1, productId: id }
           ),
-        });
-
-        if (result) {
-          return await handleAddCart();
+        },
+        {
+          onSuccess: async () => {
+            setIsSuccess(true);
+          },
+          onError: () => {
+            window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+          },
         }
-
-        return window.alert(
-          "오류가 발생했습니다. 관리자에게 문의 부탁드립니다."
-        );
-      }
-
-      const result = await addCart({
-        // email,
-        product: Object.assign(
-          { ...product },
-          { selectOption, count: 1, productId: id }
-        ),
-      });
-
-      if (result) {
-        return await handleAddCart();
-      }
-
-      return window.alert("오류가 발생했습니다. 관리자에게 문의 부탁드립니다.");
+      );
     }
 
     return;
@@ -114,6 +119,7 @@ function Product() {
                 ))}
             </select>
           </div>
+          {isSuccess && <Notification title={"장바구니에 담겼습니다."} />}
           <button
             className="rounded-md border-2 p-2 mb-2 w-full border-black bg-black text-white mt-4"
             onClick={handleClickCart}
