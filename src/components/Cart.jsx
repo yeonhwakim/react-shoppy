@@ -27,6 +27,7 @@ function Cart() {
         });
       });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const incrementProduct = async (idx) => {
