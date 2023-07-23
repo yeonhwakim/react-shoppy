@@ -48,7 +48,7 @@ function NewProduct() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [isSuccess]);
+  }, [isSuccess, navigate]);
 
   const { image } = product;
 
